@@ -1,0 +1,14 @@
+{
+    "name": "-/ergonomics",
+    "authors": [
+        {
+            "name": "Elsilent",
+            "email": "m.andreiuk@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex": "~1.2",
+        "twig/twig": "~1.18",
+        "symfony/twig-bridge": "~2.6"
+    }
+}
