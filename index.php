@@ -40,6 +40,7 @@ $app->post('/form/{id}/find', function($id, Request $req) use ($app){
         fclose($log);
         // логи в формате csv
         fputcsv($logcsv, array("Form{$id}", "{$req->get('time')}"));
+        fwrite($logcsv, PHP_EOL);
         fclose($logcsv);
         return new Response('Content',
             Response::HTTP_OK,
