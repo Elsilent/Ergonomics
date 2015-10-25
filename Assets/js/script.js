@@ -16,13 +16,13 @@ $(document).on('ready', function(){
         console.log(startTime);
     });
     $('.form-confirm').on('click', function(){
-        ;console.log('send')
+        console.log('send');
         var time = new Date();
         endTime = time.getTime();
         console.log(endTime);
         console.log(convertTime(endTime - startTime));
         var url = $(this).data('url');
-        $.post(url, {time: convertTime(endTime - startTime)}, function() {
+        $.post(url, {time: endTime - startTime}, function() {
            console.log('success');
             var ok = $('<span>').addClass('glyphicon glyphicon-ok');
             $('h1.well').append(ok.css('color', '#419641'));

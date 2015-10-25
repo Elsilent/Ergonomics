@@ -9,7 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Application();
 
 // db connection
-//$app['connection'] = pg_connect("host='localhost' port=5432 dbname=publish user=postgres password=user");
+$app['connection'] = pg_connect("host='localhost' port=5432 dbname=Ergonomics user=postgres password=user");
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options'  => array(
+        'driver'   => 'pdo_pgsql',
+        'host'     => 'localhost',
+        'port'     => '5432',
+        'dbname'   => 'Ergonomics',
+        'user'     => 'postgres',
+        'password' => 'user'
+    ),
+));
 
 // debug on
 $app['debug'] = true;
@@ -20,6 +30,8 @@ $app->register(new TwigServiceProvider(), array(
 ));
 // for twig path
 $app->register(new UrlGeneratorServiceProvider());
+// session
+$app->register(new \Silex\Provider\SessionServiceProvider());
 // index
 $app->get('/', function() use ($app){
     return $app['twig']->render('index.twig', array());
@@ -29,8 +41,21 @@ $app->get('/form/{id}', function($id) use ($app){
     return $app['twig']->render('index.twig', array('id' => $id));
 })->bind('form')->assert('id', '\d+');
 
+$app->post('/user', function(Request $req) use ($app){
+    $app['session']->set('user', ['username' => $req->get('fio')]);
+    return $app->redirect('/form/1');
+})->bind('user');
+
+$app->get('/statistics', function() use ($app){
+    $csv = array_map('str_getcsv', file(__DIR__ . '/Logs/logs.csv'));
+    return $app['twig']->render('index.twig', array('statistics' => ['rr']));
+})->bind('statistics');
+
 $app->post('/form/{id}/find', function($id, Request $req) use ($app){
     try {
+        $user = $app['session']->get('user');
+        $user['form' . $id] = $req->get('time');
+        $app['session']->set('user', $user);
         // обычные логи
         $log = fopen(__DIR__ . '/Logs/logs', 'a+');
         $logcsv = fopen(__DIR__ . '/Logs/logs.csv', 'a+');
@@ -40,7 +65,6 @@ $app->post('/form/{id}/find', function($id, Request $req) use ($app){
         fclose($log);
         // логи в формате csv
         fputcsv($logcsv, array("Form{$id}", "{$req->get('time')}"));
-        fwrite($logcsv, PHP_EOL);
         fclose($logcsv);
         return new Response('Content',
             Response::HTTP_OK,
@@ -53,6 +77,38 @@ $app->post('/form/{id}/find', function($id, Request $req) use ($app){
         );
     }
 })->bind('find')->assert('id', '\d+');
+
+$app->post('/save', function() use ($app){
+    try {
+        $app['db']->insert('logs', $app['session']->get('user'));
+        session_destroy();
+        return $app->redirect('/statistics');
+    } catch (\Exception $e) {
+        return new Response('Content',
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            array('content-type' => 'text/html')
+        );
+    }
+})->bind('save');
+
+$app->get('/data', function() use ($app){
+    try {
+        $logs = $app['db']->fetchAll('SELECT * FROM logs');
+        $out = [];
+        foreach($logs as $log) {
+            $out[$log['username']] = [
+                $log['form1'] ?: null,
+                $log['form2'] ?: null,
+                $log['form3'] ?: null,
+                $log['form4'] ?: null,
+            ];
+        }
+        return $app->json($out, 201);
+    } catch (\Exception $e) {
+        print_r($e);
+    }
+})->bind('getData');
+
 
 
 $app->run();

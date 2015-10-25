@@ -16,6 +16,11 @@
       </div>
       <div class="col-lg-12 well">
         <button class="btn btn-success pull-left form-start">Начать</button>
+        <form method="post" action="{{ path('save') }}">
+          <div class="pull-right">
+            <button type="submit" class="btn btn-sm btn-info">Сохранить</button>
+          </div>
+        </form>
         <div class="row">
           <form>
             <div class="col-sm-12">
@@ -86,4 +91,5 @@
       </div>
     </div>
   </div>
+
 </div>

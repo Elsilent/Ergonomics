@@ -5,6 +5,7 @@
   <title>Курсовая работа</title>
   <script type="text/javascript" src="../Assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="../Assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../Assets/js/highcharts.js"></script>
   <script type="text/javascript" src="../Assets/js/script.js"></script>
   <link rel="stylesheet" href="../Assets/css/bootstrap.min.css" type="text/css"/>
   <link rel="stylesheet" href="../Assets/css/bootstrap-theme.min.css" type="text/css"/>
@@ -20,10 +21,13 @@
           <li><a href="{{ path('form', {'id': 2}) }}">Вариант 2</a></li>
           <li><a href="{{ path('form', {'id': 3}) }}">Вариант 3</a></li>
           <li><a href="{{ path('form', {'id': 4}) }}">Вариант 4</a></li>
+          <li><a href="{{ path('statistics') }}">Статистика</a></li>
         </ul>
       </div>
     </div>
   </nav>
+
+
   {% if id is defined %}
     {%  if id == 1 %}
       {% include 'form1.twig' %}
@@ -37,6 +41,24 @@
     {%  if id == 4 %}
       {% include 'form4.twig' %}
     {% endif %}
+  {%  elseif statistics is defined %}
+    {% include 'statistics.twig' %}
+  {% else %}
+    <div class="container-center" xmlns="http://www.w3.org/1999/html">
+      <form method="post" action="{{ path('user') }}">
+        <h3 class="well">Новый рецензент</h3>
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-10 form-group">
+              <input type="text" name="fio" placeholder="Введите ФИО" class="form-control">
+            </div>
+            <div class="col-sm-2 form-group">
+              <button type="submit" class="btn btn-success">Добавить</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   {% endif %}
 
 </body>
