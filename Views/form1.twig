@@ -8,66 +8,60 @@
       <h1 class="well">Форма поиска</h1>
       <div class="text-container">
         <strong>
-          Необходимо найти следующие данные
-          wdaawddddd
-          dawwwwwwwwwwwwwwww
+          Необходимо найти следующие данные: <br/>
+          ФИО: Иванов Иван Иванович, 1993 года рождения, пол мужской<br/>
+          Российское гражданство, адрес: г.Москва, ул. Бауманская, д.1<br/>
+          Факультет ИУ, кафедра ИУ-5, группа 112
         </strong>
       </div>
       <div class="col-lg-12 well">
+        <button class="btn btn-success pull-left form-start">Начать</button>
         <div class="row">
           <form>
             <div class="col-sm-12">
               <div class="row">
-                <div class="col-sm-6 form-group">
-                  <label>First Name</label>
-                  <input type="text" placeholder="Enter First Name Here.." class="form-control">
-                </div>
-                <div class="col-sm-6 form-group">
-                  <label>Last Name</label>
-                  <input type="text" placeholder="Enter Last Name Here.." class="form-control">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Address</label>
-                <textarea placeholder="Enter Address Here.." rows="3" class="form-control"></textarea>
-              </div>
-              <div class="row">
-                <div class="col-sm-4 form-group">
-                  <label>City</label>
-                  <input type="text" placeholder="Enter City Name Here.." class="form-control">
-                </div>
-                <div class="col-sm-4 form-group">
-                  <label>State</label>
-                  <input type="text" placeholder="Enter State Name Here.." class="form-control">
-                </div>
-                <div class="col-sm-4 form-group">
-                  <label>Zip</label>
-                  <input type="text" placeholder="Enter Zip Code Here.." class="form-control">
+                <div class="col-sm-12 form-group">
+                  <label>ФИО</label>
+                  <input type="text" name="fio" placeholder="Введите ФИО" class="form-control">
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-6 form-group">
-                  <label>Title</label>
-                  <input type="text" placeholder="Enter Designation Here.." class="form-control">
-                </div>
-                <div class="col-sm-6 form-group">
-                  <label>Company</label>
-                  <input type="text" placeholder="Enter Company Name Here.." class="form-control">
+                <div class="col-sm-12 form-group">
+                  <label>Год рождения</label>
+                  <input type="text" name="year" placeholder="Введите год рождения" class="form-control">
                 </div>
               </div>
-              <div class="form-group">
-                <label>Phone Number</label>
-                <input type="text" placeholder="Enter Phone Number Here.." class="form-control">
+              <div class="row">
+                <div class="col-sm-12 form-group">
+                  <label>Пол</label>
+                  <select name="gender">
+                    <option value="m">М</option>
+                    <option value="f">Ж</option>
+                  </select>
+                </div>
               </div>
               <div class="form-group">
-                <label>Email Address</label>
-                <input type="text" placeholder="Enter Email Address Here.." class="form-control">
+                <label>Гражданство</label>
+                <input type="text" name="country" placeholder="Введите гражданство" class="form-control">
               </div>
               <div class="form-group">
-                <label>Website</label>
-                <input type="text" placeholder="Enter Website Name Here.." class="form-control">
+                <label>Адрес</label>
+                <input type="text" name="address" placeholder="Введите адрес" class="form-control">
               </div>
-              <button type="button" class="btn btn-lg btn-info">Submit</button>
+              <div class="form-group">
+                <label>Факультет</label>
+                <input type="text" name="faculty" placeholder="Введите факультет" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Кафедра</label>
+                <input type="text" name="department" placeholder="Введите кафедру" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Группа</label>
+                <input type="text" name="group" placeholder="Введите группу" class="form-control">
+              </div>
+              <button type="button" class="btn btn-lg btn-success form-confirm"
+                data-url="{{ path('find', {'id': 1}) }}">Подтвердить</button>
             </div>
           </form>
         </div>

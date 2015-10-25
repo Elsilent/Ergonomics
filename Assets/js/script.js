@@ -10,12 +10,13 @@ function convertTime(diff) {
 }
 $(document).on('ready', function(){
     var startTime, endTime;
-    $('#fio').on('focus', function(){
+    $('.form-start').on('click', function(){
         var time = new Date();
         startTime = time.getTime();
         console.log(startTime);
     });
-    $('.form1-send').on('click', function(){
+    $('.form-confirm').on('click', function(){
+        ;console.log('send')
         var time = new Date();
         endTime = time.getTime();
         console.log(endTime);
@@ -23,6 +24,8 @@ $(document).on('ready', function(){
         var url = $(this).data('url');
         $.post(url, {time: convertTime(endTime - startTime)}, function() {
            console.log('success');
+            var ok = $('<span>').addClass('glyphicon glyphicon-ok');
+            $('h1.well').append(ok.css('color', '#419641'));
         });
     });
 });

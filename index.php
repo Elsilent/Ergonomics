@@ -8,17 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 $app = new Application();
 
-// соединение с БД
-$app['connection'] = pg_connect("host='localhost' port=5432 dbname=publish user=postgres password=user");
+// db connection
+//$app['connection'] = pg_connect("host='localhost' port=5432 dbname=publish user=postgres password=user");
 
 // debug on
 $app['debug'] = true;
 
-// подключаем twig
+// twig templates dir
 $app->register(new TwigServiceProvider(), array(
     'twig.path' => __DIR__ . '/Views/'
 ));
-// генератор url'ов
+// for twig path
 $app->register(new UrlGeneratorServiceProvider());
 // index
 $app->get('/', function() use ($app){
@@ -31,14 +31,14 @@ $app->get('/form/{id}', function($id) use ($app){
 
 $app->post('/form/{id}/find', function($id, Request $req) use ($app){
     try {
-        // логи в обычном формате
+        // РѕР±С‹С‡РЅС‹Рµ Р»РѕРіРё
         $log = fopen(__DIR__ . '/Logs/logs', 'a+');
         $logcsv = fopen(__DIR__ . '/Logs/logs.csv', 'a+');
         fwrite($log, "Form{$id}:" . PHP_EOL);
         fwrite($log, "Time('Min:sec:msec'):{$req->get('time')}" . PHP_EOL);
         fwrite($log, "==================" . PHP_EOL);
         fclose($log);
-        // логи в формате csv
+        // Р»РѕРіРё РІ С„РѕСЂРјР°С‚Рµ csv
         fputcsv($logcsv, array("Form{$id}", "{$req->get('time')}"));
         fclose($logcsv);
         return new Response('Content',
