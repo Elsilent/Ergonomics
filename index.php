@@ -96,11 +96,35 @@ $app->get('/data', function() use ($app){
         $logs = $app['db']->fetchAll('SELECT * FROM logs');
         $out = [];
         foreach($logs as $log) {
+            // x - индекс точки по оси X
+            // y - значение времени
+            // n - на что делим (dwa weightVariableName)
+            // s - значение (dwa valueVariableName)
             $out[$log['username']] = [
-                $log['form1'] ?: null,
-                $log['form2'] ?: null,
-                $log['form3'] ?: null,
-                $log['form4'] ?: null,
+                $log['form1'] ? [
+                    'x' => 0,
+                    'y' => $log['form1'],
+                    'n' => 1,
+                    's' => $log['form1'],
+                ] : null,
+                $log['form2'] ? [
+                    'x' => 1,
+                    'y' => $log['form2'],
+                    'n' => 1,
+                    's' => $log['form2'],
+                ] : null,
+                $log['form3'] ? [
+                    'x' => 2,
+                    'y' => $log['form3'],
+                    'n' => 1,
+                    's' => $log['form3'],
+                ] : null,
+                $log['form4'] ? [
+                    'x' => 3,
+                    'y' => $log['form4'],
+                    'n' => 1,
+                    's' => $log['form4'],
+                ] : null,
             ];
         }
         return $app->json($out, 201);

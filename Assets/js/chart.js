@@ -7,6 +7,7 @@ $(function () {
                 data: value
             });
         });
+    }).done(function() {
         $('#container').highcharts({
             title: {
                 text: 'Среднее время ввода данных',
@@ -22,6 +23,13 @@ $(function () {
                         'Time: ' + Highcharts.dateFormat('%M:%S', this.y);
                 }
             },
+            // Важно
+            // выставляем весовой коэффициент в 1
+            wgaOptions: {
+                'visibleAtFirst': true,
+                'averageFactor': 1
+            },
+
             plotOptions: {
                 bar: {
                     dataLabels: {
@@ -75,6 +83,10 @@ $(function () {
                 borderWidth: 0
             },
             series: logs
+        });
+        $('.average').on('click', function() {
+            console.log($('#container').highcharts().DynamicWeightedAverage());
+            $('#container').highcharts();//.DynamicWeightedAverage();
         });
     });
 });
