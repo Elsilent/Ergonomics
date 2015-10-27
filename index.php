@@ -81,7 +81,6 @@ $app->post('/form/{id}/find', function($id, Request $req) use ($app){
 $app->post('/save', function() use ($app){
     try {
         $app['db']->insert('logs', $app['session']->get('user'));
-        session_destroy();
         return $app->redirect('/statistics');
     } catch (\Exception $e) {
         return new Response('Content',
