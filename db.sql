@@ -54,8 +54,12 @@ SET search_path = public, pg_catalog;
 --
 
 INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (1, 'wdw', 900, 5000, 6000, 863);
-INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (2, 'test        ', 2000, 3000, 4000, 2000);
 INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (3, 'Иванов Иван Иванович', 3465, 3091, 1448, 1422);
+INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (4, 'test', NULL, NULL, NULL, 1300);
+INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (5, 'test', NULL, NULL, NULL, 1340);
+INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (6, 'test', NULL, NULL, NULL, 1290);
+INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (7, 'test', NULL, NULL, NULL, 1250);
+INSERT INTO logs (id, username, form1, form2, form3, form4) VALUES (2, 'test', 2000, 3000, 4000, 2000);
 
 
 --

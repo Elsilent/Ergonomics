@@ -1,0 +1,15 @@
+<ul class="list-inline" style="display: table; margin: 0 auto;">
+  {% for username in usernames %}
+    <li>
+      <button class="btn btn-success user-progress" data-url="{{ path('getProgress', {'username': username.username}) }}"
+         data-login="{{ username.username }}">{{ username.username }}</button>
+    </li>
+  {% endfor %}
+</ul>
+
+<div id="container" style="width:100%; height:400px;"></div>
+{#<button class="btn btn-info average" style="display: table; margin: 0 auto;">Построить среднее значение</button>#}
+
+<script type="text/javascript" src="../Assets/js/highcharts.js"></script>
+<script type="text/javascript" src="../Assets/js/highcharts-dwa.js"></script>
+<script type="text/javascript" src="../Assets/js/progress.js"></script>

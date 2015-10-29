@@ -21,6 +21,7 @@
           <li><a href="{{ path('form', {'id': 3}) }}">Вариант 3</a></li>
           <li><a href="{{ path('form', {'id': 4}) }}">Вариант 4</a></li>
           <li><a href="{{ path('statistics') }}">Статистика</a></li>
+          <li><a href="{{ path('progress') }}">Прогресс</a></li>
         </ul>
       </div>
     </div>
@@ -42,6 +43,8 @@
     {% endif %}
   {%  elseif statistics is defined %}
     {% include 'statistics.twig' %}
+  {%  elseif progress is defined %}
+    {% include 'progress.twig' %}
   {% else %}
     <div class="container-center" xmlns="http://www.w3.org/1999/html">
       <form method="post" action="{{ path('user') }}">

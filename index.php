@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Application();
 
 // db connection
-$app['connection'] = pg_connect("host='localhost' port=5432 dbname=Ergonomics user=postgres password=user");
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'db.options'  => array(
         'driver'   => 'pdo_pgsql',
@@ -17,7 +16,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         'port'     => '5432',
         'dbname'   => 'Ergonomics',
         'user'     => 'postgres',
-        'password' => 'user'
+        'password' => 'postgres'
     ),
 ));
 
@@ -47,9 +46,21 @@ $app->post('/user', function(Request $req) use ($app){
 })->bind('user');
 
 $app->get('/statistics', function() use ($app){
-    $csv = array_map('str_getcsv', file(__DIR__ . '/Logs/logs.csv'));
-    return $app['twig']->render('index.twig', array('statistics' => ['rr']));
+//    $csv = array_map('str_getcsv', file(__DIR__ . '/Logs/logs.csv'));
+    return $app['twig']->render('index.twig', array('statistics' => true));
 })->bind('statistics');
+
+$app->get('/progress', function() use ($app){
+    try {
+        $usernames = $app['db']->fetchAll('SELECT DISTINCT username FROM logs;');
+    } catch (\Exception $e) {
+        return new Response('DB error',
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            array('content-type' => 'text/html')
+        );
+    }
+    return $app['twig']->render('index.twig', array('progress' => true, 'usernames' => $usernames));
+})->bind('progress');
 
 $app->post('/form/{id}/find', function($id, Request $req) use ($app){
     try {
@@ -66,12 +77,12 @@ $app->post('/form/{id}/find', function($id, Request $req) use ($app){
         // логи в формате csv
         fputcsv($logcsv, array("Form{$id}", "{$req->get('time')}"));
         fclose($logcsv);
-        return new Response('Content',
+        return new Response('OK',
             Response::HTTP_OK,
             array('content-type' => 'text/html')
         );
     } catch (\Exception $e) {
-        return new Response('Content',
+        return new Response('Write error',
             Response::HTTP_INTERNAL_SERVER_ERROR,
             array('content-type' => 'text/html')
         );
@@ -83,8 +94,8 @@ $app->post('/save', function() use ($app){
         $app['db']->insert('logs', $app['session']->get('user'));
         return $app->redirect('/statistics');
     } catch (\Exception $e) {
-        return new Response('Content',
-            Response::HTTP_INTERNAL_SERVER_ERROR,
+        return new Response('DB error',
+            Response::HTTP_NOT_FOUND,
             array('content-type' => 'text/html')
         );
     }
@@ -92,7 +103,7 @@ $app->post('/save', function() use ($app){
 
 $app->get('/data', function() use ($app){
     try {
-        $logs = $app['db']->fetchAll('SELECT * FROM logs');
+        $logs = $app['db']->fetchAll('SELECT * FROM logs;');
         $out = [];
         foreach($logs as $log) {
             // x - индекс точки по оси X
@@ -129,8 +140,41 @@ $app->get('/data', function() use ($app){
         return $app->json($out, 201);
     } catch (\Exception $e) {
         print_r($e);
+        return new Response('DB error',
+            Response::HTTP_NOT_FOUND,
+            array('content-type' => 'text/html')
+        );
     }
 })->bind('getData');
+
+$app->get('/progress/data/{username}', function($username) use ($app){
+    try{
+        $results = $app['db']->fetchAll(
+          "SELECT row_number() OVER (ORDER BY id ASC) as row_num, * FROM logs
+           WHERE username='{$username}' ORDER BY id ASC LIMIT 5;"
+        );
+        $out = [];
+        foreach($results as $res) {
+            // x - индекс точки по оси X
+            // y - значение времени
+            // n - на что делим (dwa weightVariableName)
+            // s - значение (dwa valueVariableName)
+            $out[$res['username']][] = [
+                'x' => $res['row_num'],
+                'y' => $res['form4'],
+                'n' => 1,
+                's' => $res['form4']
+            ];
+        }
+    } catch (\Exception $e) {
+        print_r($e);
+        return new Response('DB error',
+            Response::HTTP_NOT_FOUND,
+            array('content-type' => 'text/html')
+        );
+    }
+    return $app->json($out, 201);
+})->bind('getProgress');
 
 
 
