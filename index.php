@@ -176,6 +176,48 @@ $app->get('/progress/data/{username}', function($username) use ($app){
     return $app->json($out, 201);
 })->bind('getProgress');
 
+$app->get('/progress/all', function() use ($app) {
+   try {
+       // t => temp table logs, r => rows by username DESC,
+       // row_num => rows by username ASC
+       $results = $app['db']->fetchAll(
+            'WITH res AS (
+                SELECT *
+                FROM (
+                       SELECT
+                         row_number()
+                         OVER (PARTITION BY username
+                           ORDER BY id DESC) AS r,
+                         row_number()
+                         OVER (PARTITION BY username
+                           ORDER BY id ASC ) AS row_num,
+                         t.*
+                       FROM
+                         logs t) x
+                WHERE
+                  x.r <= 5
+            )
+            SELECT * FROM res ORDER BY id ASC;'
+       );
+       $out = [];
+       foreach($results as $res) {
+           $out[$res['username']][] = [
+               'x' => $res['row_num'],
+               'y' => $res['form4'],
+               'n' => 1,
+               's' => $res['form4']
+           ];
+       }
+   } catch (\Exception $e) {
+       print_r($e);
+       return new Response('DB error',
+           Response::HTTP_NOT_FOUND,
+           array('content-type' => 'text/html')
+       );
+   }
+   return $app->json($out, 201);
+})->bind('allProgress');
+
 
 
 $app->run();

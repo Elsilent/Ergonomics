@@ -27,6 +27,7 @@ $(function () {
                 // Важно
                 // выставляем весовой коэффициент в 1
                 wgaOptions: {
+                    'name': 'Среднее значение',
                     'visibleAtFirst': true,
                     'averageFactor': 1
                 },
@@ -82,10 +83,10 @@ $(function () {
                 },
                 series: logs
             });
-            /*$('.average').on('click', function () {
+            $('.average').on('click', function () {
                 $('#container').highcharts().DynamicWeightedAverage();
                 //$('#container').highcharts();//.DynamicWeightedAverage();
-            });*/
+            });
         });
     });
 });

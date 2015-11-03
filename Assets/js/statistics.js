@@ -26,6 +26,7 @@ $(function () {
             // Важно
             // выставляем весовой коэффициент в 1
             wgaOptions: {
+                'name': 'Среднее значение',
                 'visibleAtFirst': true,
                 'averageFactor': 1
             },
