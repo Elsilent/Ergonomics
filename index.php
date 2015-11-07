@@ -16,7 +16,8 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         'port'     => '5432',
         'dbname'   => 'Ergonomics',
         'user'     => 'postgres',
-        'password' => 'postgres'
+//        'password' => 'postgres'
+        'password' => 'user'
     ),
 ));
 
@@ -103,7 +104,13 @@ $app->post('/save', function() use ($app){
 
 $app->get('/data', function() use ($app){
     try {
-        $logs = $app['db']->fetchAll('SELECT * FROM logs;');
+        $logs = $app['db']->fetchAll(
+            'SELECT * FROM logs
+             WHERE
+             form1 IS NOT NULL AND
+             form2 IS NOT NULL AND
+             form3 IS NOT NULL AND
+             form4 IS NOT NULL;');
         $out = [];
         foreach($logs as $log) {
             // x - индекс точки по оси X
@@ -147,11 +154,44 @@ $app->get('/data', function() use ($app){
     }
 })->bind('getData');
 
+$app->get('/statistics/{form}', function($form) use ($app){
+    try{
+        $results = $app['db']->fetchAll(
+            "SELECT row_number() OVER (ORDER BY id ASC) as row_num, id, {$form} as form, username FROM logs
+             WHERE
+             form1 IS NOT NULL AND
+             form2 IS NOT NULL AND
+             form3 IS NOT NULL AND
+             form4 IS NOT NULL
+            ORDER BY id ASC LIMIT 20;"
+        );
+        $out = [];
+        foreach($results as $res) {
+            // x => row_num - 1, т.к. отсчет с x = 0
+            $out['data'][] = [
+                'x' => $res['row_num'] - 1,
+                'y' => $res['form'],
+                'n' => 1,
+                's' => $res['form']
+            ];
+            $out['username'][] = $res['username'];
+        }
+    } catch (\Exception $e) {
+        print_r($e);
+        return new Response('DB error',
+            Response::HTTP_NOT_FOUND,
+            array('content-type' => 'text/html')
+        );
+    }
+    return $app->json($out, 201);
+})->bind('getDataByForm');
+
 $app->get('/progress/data/{username}', function($username) use ($app){
     try{
         $results = $app['db']->fetchAll(
           "SELECT row_number() OVER (ORDER BY id ASC) as row_num, * FROM logs
-           WHERE username='{$username}' ORDER BY id ASC LIMIT 5;"
+           WHERE username='{$username}'
+           ORDER BY id ASC LIMIT 5;"
         );
         $out = [];
         foreach($results as $res) {
@@ -181,7 +221,7 @@ $app->get('/progress/all', function() use ($app) {
        // t => temp table logs, r => rows by username DESC,
        // row_num => rows by username ASC
        $results = $app['db']->fetchAll(
-            'WITH res AS (
+            "WITH res AS (
                 SELECT *
                 FROM (
                        SELECT
@@ -197,7 +237,7 @@ $app->get('/progress/all', function() use ($app) {
                 WHERE
                   x.r <= 5
             )
-            SELECT * FROM res ORDER BY id ASC;'
+            SELECT * FROM res ORDER BY id ASC;"
        );
        $out = [];
        foreach($results as $res) {

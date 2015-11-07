@@ -11,7 +11,7 @@ $(function () {
         }).done(function () {
             $('#container').highcharts({
                 title: {
-                    text: 'Среднее время ввода данных',
+                    text: 'Зависимость времени ввода данных от числа экспериментов',
                     x: -20 //center
                 },
                 subtitle: {
@@ -21,7 +21,7 @@ $(function () {
                     formatter: function () {
                         return '' +
                             "" +
-                            'Time: ' + Highcharts.dateFormat('%M:%S', this.y);
+                            'Время: ' + Highcharts.dateFormat('%M:%S', this.y);
                     }
                 },
                 // Важно

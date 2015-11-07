@@ -1,5 +1,5 @@
 <ul class="list-inline" style="display: table; margin: 0 auto; margin-bottom: 1%;">
-  {% for username in usernames %}
+  {% for username in usernames|sort %}
     <li>
       <button class="btn btn-success user-progress" data-url="{{ path('getProgress', {'username': username.username}) }}"
          data-login="{{ username.username }}">{{ username.username }}</button>
