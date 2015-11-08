@@ -71,7 +71,7 @@ $(function () {
 
                             var hours = (minutes / 60) | 0;
                             minutes -= hours * 60;
-                            return seconds;
+                            return minutes + ':' + seconds;
                         }
                     }
                 },

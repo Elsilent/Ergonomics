@@ -154,6 +154,52 @@ $app->get('/data', function() use ($app){
     }
 })->bind('getData');
 
+$app->get('/statistics/average', function() use ($app){
+    try {
+        $log = $app['db']->fetchAll(
+            'SELECT avg(form1) as form1, avg(form2) as form2, avg(form3) as form3, avg(form4) as form4 FROM logs
+             WHERE
+              form1 IS NOT NULL AND
+              form2 IS NOT NULL AND
+              form3 IS NOT NULL AND
+              form4 IS NOT NULL;');
+        $out = [];
+        foreach($log as $log) {
+            $out[] = [
+                'x' => 0,
+                'y' => (int)$log['form1'],
+                'n' => 1,
+                's' => (int)$log['form1'],
+            ];
+            $out[] = [
+                'x' => 1,
+                'y' => (int)$log['form2'],
+                'n' => 1,
+                's' => (int)$log['form2'],
+            ];
+            $out[] = [
+                'x' => 2,
+                'y' => (int)$log['form3'],
+                'n' => 1,
+                's' => (int)$log['form3'],
+            ];
+            $out[] = [
+                'x' => 3,
+                'y' => (int)$log['form4'],
+                'n' => 1,
+                's' => (int)$log['form4'],
+            ];
+        }
+        return $app->json($out, 201);
+    } catch (\Exception $e) {
+        print_r($e);
+        return new Response('DB error',
+            Response::HTTP_NOT_FOUND,
+            array('content-type' => 'text/html')
+        );
+    }
+})->bind('getAverage');
+
 $app->get('/statistics/{form}', function($form) use ($app){
     try{
         $results = $app['db']->fetchAll(

@@ -12,8 +12,17 @@
     <button class="btn btn-success getDataByForm" data-url="{{ path('getDataByForm', {'form': 'form4'}) }}">Форма 4</button>
   </div>
 </div>
+
 <div id="container" data-url="{{ path('getData') }}" style="width:100%; height:400px;"></div>
-<button class="btn btn-info average" style="display: table; margin: 0 auto;">Построить среднее значение</button>
+<div class="row" style="display: table; margin: 0 auto;">
+  <div class="col-md-6">
+    <button class="btn btn-success getAverage" style="display: table; margin: 0 auto;"
+            data-url="{{ path('getAverage') }}">Построить среднее значение</button>
+  </div>
+  <div class="col-md-6">
+    <button class="btn btn-info average" style="display: table; margin: 0 auto;">Построить средневзвешенное значение</button>
+  </div>
+</div>
 <script type="text/javascript" src="../Assets/js/highcharts.js"></script>
 <script type="text/javascript" src="../Assets/js/highcharts-dwa.js"></script>
 <script type="text/javascript" src="../Assets/js/statistics.js"></script>
